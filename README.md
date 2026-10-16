@@ -94,4 +94,4 @@ Ce projet a été réalisé dans le cadre d'un stage en entreprise. Les élémen
 
 ## Licence
 
-À préciser selon ton choix (MIT recommandé pour un portfolio de ce type).
+[MIT](LICENSE)

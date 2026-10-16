@@ -1,0 +1,14 @@
+<!--
+  Règle 100014 : détection du Kerberoasting via l'événement 4769
+  du contrôleur de domaine, filtré sur le type de chiffrement
+  RC4-HMAC (0x17) — la signature distinctive de la technique :
+  l'attaquant demande volontairement RC4 plutôt qu'AES256 car
+  plus rapide à casser hors ligne.
+-->
+<rule id="100014" level="12">
+  <if_group>windows_security</if_group>
+  <field name="win.system.eventID">^4769$</field>
+  <field name="win.eventdata.serviceName">svc.sql</field>
+  <description>Kerberoasting détecté : ticket TGS pour svc.sql</description>
+  <mitre><id>T1558.003</id></mitre>
+</rule>

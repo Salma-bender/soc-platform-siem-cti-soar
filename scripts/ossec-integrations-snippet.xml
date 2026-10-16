@@ -1,0 +1,20 @@
+<!--
+  Extrait de ossec.conf (Wazuh Manager) déclarant les intégrations
+  custom-misp et custom-shuffle. Remplace les valeurs entre
+  crochets par les tiennes avant usage — ne pousse jamais une
+  vraie clé API ou une IP interne sur un dépôt public.
+-->
+<integration>
+  <name>custom-misp</name>
+  <api_key>[clé API MISP]</api_key>
+  <hook_url>https://[IP du serveur MISP]</hook_url>
+  <rule_id>100010,5760,2502</rule_id>
+  <alert_format>json</alert_format>
+</integration>
+
+<integration>
+  <name>custom-shuffle</name>
+  <hook_url>http://[IP:port du webhook Shuffle]</hook_url>
+  <rule_id>100010,5760,2502</rule_id>
+  <alert_format>json</alert_format>
+</integration>

@@ -1,0 +1,17 @@
+<!--
+  Règle 100012 : détection d'une persistance par tâche planifiée
+  (T1053.005), via l'Event ID 1 Sysmon (Process Create) sur une
+  exécution de schtasks.exe avec les arguments /create ou /sc.
+
+  ⚠️ Reconstruite à partir de la description du rapport (section 7.6.1) :
+  le rapport ne cite pas son XML littéral. Vérifie ses champs exacts
+  (noms d'attributs, regex) contre ta configuration réelle avant de
+  t'y fier ou de la pousser telle quelle.
+-->
+<rule id="100012" level="12">
+  <if_group>sysmon_event1</if_group>
+  <field name="win.eventdata.image">schtasks.exe</field>
+  <field name="win.eventdata.commandLine" type="pcre2">(?i)(/create|/sc\s)</field>
+  <description>Persistance suspecte : création d'une tâche planifiée via schtasks.exe</description>
+  <mitre><id>T1053.005</id></mitre>
+</rule>

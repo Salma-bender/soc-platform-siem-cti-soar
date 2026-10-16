@@ -1,0 +1,14 @@
+# Secrets et identifiants — ne jamais pousser
+*.pem
+*.key
+id_rsa*
+.env
+**/credentials*
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.vscode/
+.idea/

@@ -1,0 +1,14 @@
+<!--
+  Règle 100050 : détection d'une connexion réseau vers le port du
+  C2 Sliver (8888), via l'événement Sysmon Network Connect (ID 3).
+  Nécessite d'ajouter le port surveillé dans la section
+  <NetworkConnect onmatch="include"> de sysmonconfig.xml — la
+  configuration SwiftOnSecurity par défaut ne le couvre pas.
+-->
+<rule id="100050" level="12">
+  <if_group>sysmon_event3</if_group>
+  <field name="win.eventdata.destinationPort">^8888$</field>
+  <description>Sliver C2 - Connexion réseau détectée vers port C2 (8888)
+  </description>
+  <mitre><id>T1071.001</id></mitre>
+</rule>

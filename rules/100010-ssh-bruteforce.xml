@@ -1,0 +1,16 @@
+<!--
+  Règle 100010 : détection d'une attaque SSH par force brute.
+  Se déclenche par corrélation sur la règle native Wazuh 5760
+  (échec d'authentification SSH) : 4 échecs en 60 secondes depuis
+  la même adresse IP source.
+-->
+<rule id="100010" level="10" frequency="4" timeframe="60">
+  <if_matched_sid>5760</if_matched_sid>
+  <same_source_ip />
+  <description>Tentative de force brute SSH detectee : 4 echecs
+  d'authentification en 60 secondes depuis la meme IP source.</description>
+  <mitre>
+    <id>T1110.001</id>
+  </mitre>
+  <group>authentication_failures,pci_dss_11.4,gdpr_IV_35.7.d,</group>
+</rule>

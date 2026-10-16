@@ -1,0 +1,12 @@
+<!--
+  Règle 100015 : décodage et restitution des alertes d'enrichissement
+  MISP. Rend exploitables dans le Dashboard Wazuh les réponses JSON
+  brutes renvoyées par l'intégration custom-misp.
+-->
+<rule id="100015" level="8">
+  <decoded_as>json</decoded_as>
+  <field name="integration">misp</field>
+  <description>Enrichissement MISP : IP source reconnue comme
+  IOC (Threat Intelligence).</description>
+  <group>misp,threat_intel,</group>
+</rule>

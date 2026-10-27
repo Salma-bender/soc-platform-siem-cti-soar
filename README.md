@@ -11,6 +11,8 @@
 | | |
 |---|---|
 | **MTTR, avec vs sans automatisation** | de 15–30 min à **< 90 secondes** (réduction > 90 %) |
+| **MTTR mesuré, réponse automatisée** | **49 secondes** : alerte Wazuh → MISP → blocage pfSense → cas TheHive → e-mail |
+| **Positions d'attaquant couvertes** | WAN externe et LAN interne micro-segmenté, sans changer la logique de décision |
 | **MTTD, Scénario 2 (par phase)** | < 10 à 30 secondes selon la phase |
 | **Chaînes validées** | 2 scénarios d'attaque complets, de bout en bout |
 | **Référentiel** | règles de détection cartographiées MITRE ATT&CK |
@@ -42,6 +44,21 @@ Point clé de conception : **la décision de bloquer ne repose jamais sur un seu
 Attaque par force brute SSH détectée par corrélation Wazuh (4 échecs en 60 secondes depuis la même IP), enrichie via MISP, orchestrée par Shuffle (création de cas TheHive, lancement de l'analyse Cortex), puis bloquée sur pfSense uniquement quand réputation **et** comportement confirmé coïncident (ou, pour une IP étrangère, sur un comportement confirmé seul : principe de zéro confiance).
 
 **Résultat mesuré :** MTTD inchangé (~45 s, détection Wazuh dans les deux cas), MTTR réduit de 15–30 minutes à moins de 90 secondes.
+
+### Réponse automatisée aux incidents — WAN et LAN micro-segmenté (MTTR 49 s)
+
+```
+Alerte Wazuh → Corrélation MISP → Blocage IP pfSense → Cas TheHive → Notification e-mail
+```
+
+La même chaîne est validée de bout en bout pour deux positions d'attaquant, chacune obligée de traverser pfSense :
+
+- **Attaquant externe (zone WAN)** — routé via pfSense ; après blocage, la connexion SSH échoue (`Connection timed out`).
+- **Attaquant interne isolé par micro-segmentation** — une interface dédiée OPT1 (`192.168.20.0/24`) sépare la machine compromise du LAN de la victime. Une **règle Floating** applique la table `SOC_Blocklist` à toutes les interfaces (WAN, LAN, OPT1), et non plus au seul WAN.
+
+Pour l'attaquant interne, le service de décision renvoie `verdict: blocked` avec un **MTTR de 49 secondes**, l'IP est ajoutée à `SOC_Blocklist`, un cas est ouvert dans TheHive et l'analyste est notifié par e-mail. La logique de décision n'a pas été modifiée : seul le point d'application du blocage a été adapté.
+
+Détails, topologie et contrôles complémentaires (observable inconnu de MISP, faux positif 8.8.8.8 via flux CIRCL) : [`docs/reponse-automatisee-wan-lan.md`](docs/reponse-automatisee-wan-lan.md).
 
 ## Scénario 2 — Kill Chain Active Directory
 
@@ -75,6 +92,8 @@ Chaîne d'attaque complète en 4 phases, outils réels d'adversary emulation (au
 ├── playbook-ssh.png         # Logique de décision du blocage (Scénario 1)
 ├── kill-chain.png           # Kill chain MITRE ATT&CK (Scénario 2)
 ├── LICENSE
+├── docs/
+│   └── reponse-automatisee-wan-lan.md   # Réponse automatisée WAN / LAN micro-segmenté (MTTR 49 s)
 ├── rules/                   # Règles de détection Wazuh personnalisées
 │   ├── 100010-ssh-bruteforce.xml
 │   ├── 100012-persistence-scheduled-task.xml
